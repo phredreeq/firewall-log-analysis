@@ -55,13 +55,14 @@ Simulated firewall logs with 270 records:
 
 ### Query 1 — All Blocked Traffic
 index=main source="firewall_logs.csv" action=BLOCK
-Retrieves all blocked events — the starting point
-for firewall log investigation.
+
+Retrieves all blocked events. This is the starting point for firewall log investigation.
 
 ### Query 2 — Count Blocks by Source IP
 index=main source="firewall_logs.csv" action=BLOCK
 | stats count as total_blocks by source_ip
 | sort -total_blocks
+
 Groups blocked traffic by IP to identify the
 highest offenders.
 
@@ -72,20 +73,23 @@ count as total_blocks
 by source_ip
 | where unique_ports > 10
 | sort -unique_ports
+
 Uses distinct count to find IPs targeting many
-different ports — the key indicator of port scanning.
+different ports, this is the key indicator of port scanning.
 
 ### Query 4 — Sensitive Port Attack Detection
 index=main source="firewall_logs.csv" action=BLOCK
 | where port IN (22, 80, 443, 445, 3389)
 | stats count as attempts by source_ip, port
 | sort -attempts
+
 Flags blocked attempts on high value ports
 commonly targeted by attackers.
 
 ### Query 5 — Allowed vs Blocked Comparison
 index=main source="firewall_logs.csv"
 | stats count as total by action
+
 Compares legitimate vs blocked traffic to
 identify unusual ratios indicating attack activity.
 
@@ -149,7 +153,7 @@ ports with repeated attempts:
 | 445 | SMB | 4 | High — ransomware target |
 | 80 | HTTP | 3 | Medium — web admin panel |
 
-This is not random scanning — this is deliberate
+This is not random scanning, it is a deliberate
 targeting of remote access services.
 
 ### Finding 3 — High Block Ratio
